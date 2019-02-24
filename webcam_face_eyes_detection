@@ -1,0 +1,39 @@
+import cv2
+
+# create a classifier for face and eye detection
+eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_eye.xml")
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+
+def show_webcam():
+    #open the webcam
+    video = cv2.VideoCapture(0)
+    while True:
+        #read the webcam frame by frame
+        check, frame = video.read()
+        #convert the frame into the gray
+        gray_video = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        #code for detect the face
+        faces = face_cascade.detectMultiScale(gray_video, scaleFactor=1.05, minNeighbors=5)
+
+        for x, y, w, h in faces:
+            img = cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 3)
+            resized = cv2.resize(frame, (int(frame.shape[1] / 2), int(frame.shape[0] / 2)))
+        #code for detect the eyes
+        eyes = eye_cascade.detectMultiScale(gray_video, scaleFactor=1.25, minNeighbors=5)
+        for x, y, w, h in eyes:
+            img = cv2.rectangle(frame, (x, y), (x + w, y + h), (255,0, 0), 3)
+            resized = cv2.resize(frame, (int(frame.shape[1] / 2), int(frame.shape[0] / 2)))
+        #show the frame
+        cv2.imshow("webcam", frame)
+        #code for break the webcam windows (button q for quit)
+        key = cv2.waitKey(1)
+        if key == ord('q'):
+            break
+    cv2.destroyAllWindows()
+
+#main funtion
+def main():
+    show_webcam()
+
+if __name__ == '__main__':
+    main()
